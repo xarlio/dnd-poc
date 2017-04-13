@@ -46,7 +46,7 @@ const cardTarget = {
     if (hoverIndex > index) {
       props.insertAtTop(hoverIndex, index)
       monitor.getItem().index = 1
-      monitor.getItem().groupIndex = hoverIndex - 1 // as we remove
+      monitor.getItem().groupIndex = hoverIndex - 1 // as we remove the previous block of the group, the group gets another index
     }
   },
 };

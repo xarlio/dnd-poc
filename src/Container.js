@@ -65,12 +65,32 @@ const insertAtBottom = (blocks, groupIndex, origin) => {
     .deleteAt(origin)
 }
 
+const moveChildToTop = (blocks, destination, originGroupIndex, originIndex) => {
+  console.log('moveChildToTop')
+  console.log(originGroupIndex, originIndex)
+  const destinationBlock = blocks[originGroupIndex][originIndex]
+  return blocks
+    .set(originGroupIndex, blocks[originGroupIndex].deleteAt(1))
+    .insertAt(destination + 1, destinationBlock)
+}
+
+const moveChildToBottom = (blocks, destination, originGroupIndex, originIndex) => {
+  console.log('moveChildToBottom')
+  console.log(originGroupIndex, originIndex)
+  const destinationBlock = blocks[originGroupIndex][originIndex]
+  return blocks
+    .set(originGroupIndex, blocks[originGroupIndex].deleteAt(blocks[originGroupIndex].length - 1))
+    .insertAt(destination, destinationBlock)
+}
+
 class Container extends Component {
   constructor(props) {
     super(props)
     this.moveBlocks = this.moveBlocks.bind(this)
     this.insertAtTop = this.insertAtTop.bind(this)
     this.insertAtBottom = this.insertAtBottom.bind(this)
+    this.moveChildToTop = this.moveChildToTop.bind(this)
+    this.moveChildToBottom = this.moveChildToBottom.bind(this)
     this.state = {
       blocks: deepFreeze(['a', 'b', ['A', 'B', 'C', 'D'], 'c', 'd']),
     }
@@ -79,6 +99,18 @@ class Container extends Component {
   moveBlocks (groupIndex, origin, destination) {
     this.setState({
       blocks: moveBlocks(this.state.blocks, groupIndex, origin, destination)
+    })
+  }
+  
+  moveChildToTop (destination, originGroupIndex, originIndex) {
+    this.setState({
+      blocks: moveChildToTop(this.state.blocks, destination, originGroupIndex, originIndex)
+    })
+  }
+
+  moveChildToBottom (destination, originGroupIndex, originIndex) {
+    this.setState({
+      blocks: moveChildToBottom(this.state.blocks, destination, originGroupIndex, originIndex)
     })
   }
 
@@ -114,7 +146,7 @@ class Container extends Component {
   }
 
   renderBlockTarget (block, index, groupIndex) {
-    return <BlockTarget key={block} index={index} moveBlocks={this.moveBlocks}>
+    return <BlockTarget inAGroup={groupIndex>=0} key={block} index={index} moveBlocks={this.moveBlocks} moveChildToTop={this.moveChildToTop} moveChildToBottom={this.moveChildToBottom}>
       <BlockSource isChild={groupIndex>=0} index={index} groupIndex={groupIndex}>
         {this.renderBlock(block, index, groupIndex)}
       </BlockSource>
