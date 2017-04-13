@@ -41,7 +41,7 @@ const style = {
 //   return blocks
 // }
 const moveBlocks = (blocks, groupIndex, origin, destination) => {
-  console.log('moveBlocks')
+  console.log('moveBlocks', groupIndex, origin, destination)
   const originBlock = groupIndex ? blocks[groupIndex][origin] : blocks[origin]
   const destinationBlock = groupIndex ? blocks[groupIndex][destination] : blocks[destination]
   const originPath = groupIndex ? [groupIndex, origin] : [origin]
@@ -51,18 +51,46 @@ const moveBlocks = (blocks, groupIndex, origin, destination) => {
     .setIn(destinationPath, originBlock)
 }
 
+const insertAtTop = (blocks, groupIndex, origin) => {
+  console.log('insertAtTop')
+  return blocks
+    .set(groupIndex, blocks[groupIndex].insertAt(1, blocks[origin]))
+    .deleteAt(origin)
+}
+
+const insertAtBottom = (blocks, groupIndex, origin) => {
+  console.log('insertAtBottom')
+  return blocks
+    .set(groupIndex, blocks[groupIndex].push(blocks[origin]))
+    .deleteAt(origin)
+}
+
 class Container extends Component {
   constructor(props) {
-    super(props);
-    this.moveBlocks = this.moveBlocks.bind(this);
+    super(props)
+    this.moveBlocks = this.moveBlocks.bind(this)
+    this.insertAtTop = this.insertAtTop.bind(this)
+    this.insertAtBottom = this.insertAtBottom.bind(this)
     this.state = {
       blocks: deepFreeze(['a', 'b', ['A', 'B', 'C', 'D'], 'c', 'd']),
-    };
+    }
   }
 
   moveBlocks (groupIndex, origin, destination) {
     this.setState({
       blocks: moveBlocks(this.state.blocks, groupIndex, origin, destination)
+    })
+  }
+
+  insertAtTop (groupIndex, origin) {
+    this.setState({
+      blocks: insertAtTop(this.state.blocks, groupIndex, origin)
+    })
+  }
+
+  insertAtBottom (groupIndex, origin) {
+    this.setState({
+      blocks: insertAtBottom(this.state.blocks, groupIndex, origin)
     })
   }
 
@@ -75,22 +103,24 @@ class Container extends Component {
   }
 
   renderGroup (group, groupIndex) {
-    return <BlockSource isChild={false} index={groupIndex}>
-      {this.renderBlock(group[0], groupIndex)}
-      {group.slice(1).map((block, index) => {
-        return this.renderBlockTarget(block, index + 1, groupIndex)
-      })}
-    </BlockSource>
+    return <GroupTarget key={group[0]} length={group.length} index={groupIndex} insertAtTop={this.insertAtTop} insertAtBottom={this.insertAtBottom}>
+      <BlockSource isChild={false} index={groupIndex}>
+        {this.renderBlock(group[0], groupIndex)}
+        {group.slice(1).map((block, index) => {
+          return this.renderBlockTarget(block, index + 1, groupIndex)
+        })}
+      </BlockSource>
+    </GroupTarget>
   }
 
   renderBlockTarget (block, index, groupIndex) {
     return <BlockTarget key={block} index={index} moveBlocks={this.moveBlocks}>
-      <BlockSource isChild={!!groupIndex} index={index} groupIndex={groupIndex}>
+      <BlockSource isChild={groupIndex>=0} index={index} groupIndex={groupIndex}>
         {this.renderBlock(block, index, groupIndex)}
       </BlockSource>
     </BlockTarget>
   }
-  
+
   renderBlock (ref, index, groupIndex) {
     return <div>{ref}</div>
   }

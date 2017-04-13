@@ -8,9 +8,7 @@ const cardTarget = {
     const index = monitor.getItem().index;
     const groupIndex = monitor.getItem().groupIndex;
     const hoverIndex = props.index
-    // const index = props.index;
-    // const groupIndex = props.groupIndex;
-    
+
     if (hoverIndex === index) {
       return
     }
@@ -33,20 +31,16 @@ const cardTarget = {
 
     // Dragging downwards
     if (hoverIndex < index && hoverClientY > hoverMiddleY) {
-      console.log('d')
       return;
     }
 
     // Dragging upwards
     if (hoverIndex > index && hoverClientY < hoverMiddleY) {
-      console.log('u')
       return;
     }
 
     // Time to actually perform the action
-    console.log('move', index, hoverIndex)
     props.moveBlocks(groupIndex, index, hoverIndex)
-    //props.moveBlock(originalPosition, destinationPosition);
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
