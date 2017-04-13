@@ -16,7 +16,7 @@ const cardSource = {
     return {
       id: props.id,
       index: props.index,
-      position: props.position
+      groupIndex: props.groupIndex,
     };
   },
 };
