@@ -40,21 +40,21 @@ const cardTarget = {
     // When dragging upwards, only move when the cursor is above 50%
 
     // Dragging downwards
-    if (props.level === 1 && originalPosition.secondLevelIndex < destinationPosition.secondLevelIndex && hoverClientY < hoverMiddleY) {
+    if (props.level === 1 && originalPosition.secondLevelIndex < destinationPosition.secondLevelIndex && hoverClientY > hoverMiddleY) {
       return;
     }
 
     // Dragging upwards
-    if (props.level === 1 && originalPosition.secondLevelIndex > destinationPosition.secondLevelIndex && hoverClientY > hoverMiddleY) {
+    if (props.level === 1 && originalPosition.secondLevelIndex > destinationPosition.secondLevelIndex && hoverClientY < hoverMiddleY) {
       return;
     }
 
-    if (props.level === 0 && originalPosition.firstLevelIndex < destinationPosition.firstLevelIndex && hoverClientY < hoverMiddleY) {
+    if (props.level === 0 && originalPosition.firstLevelIndex < destinationPosition.firstLevelIndex && hoverClientY > hoverMiddleY) {
       return;
     }
 
     // Dragging upwards
-    if (props.level === 0 && originalPosition.firstLevelIndex > destinationPosition.firstLevelIndex && hoverClientY > hoverMiddleY) {
+    if (props.level === 0 && originalPosition.firstLevelIndex > destinationPosition.firstLevelIndex && hoverClientY < hoverMiddleY) {
       return;
     }
 
