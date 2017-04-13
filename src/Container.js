@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import update from 'react/lib/update';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import CardSource from './CardSource';
-import CardTarget from './CardTarget';
+import BlockSource from './BlockSource';
+import BlockTarget from './BlockTarget';
 
 const style = {
   width: 400,
@@ -63,8 +63,8 @@ class Container extends Component {
         {cards.map((item, firstLevelIndex) => {
           const isGroup = item instanceof Array
           if (isGroup) groupCount++
-          return <CardTarget level={0} key={isGroup ? groupCount : item} position={{firstLevelIndex, secondLevelIndex: 0}} moveCard={this.moveCard}>
-            <CardSource
+          return <BlockTarget level={0} key={isGroup ? groupCount : item} position={{firstLevelIndex, secondLevelIndex: 0}} moveCard={this.moveCard}>
+            <BlockSource
               key={item}
               position={{firstLevelIndex, secondLevelIndex: 0}}
               index={firstLevelIndex}
@@ -73,8 +73,8 @@ class Container extends Component {
               <div>
                 {isGroup ? this.renderGroup(item[0], item.slice(1), firstLevelIndex) : this.renderItem(item) }
               </div>
-            </CardSource>
-          </CardTarget>
+            </BlockSource>
+          </BlockTarget>
         })}
       </div>
     )
@@ -83,16 +83,16 @@ class Container extends Component {
     return <div>
       {this.renderItem(parentRef)}
       {childs.map((child, secondLevelIndex)=> (
-        <CardTarget level={1} key={child} position={{firstLevelIndex, secondLevelIndex}} moveCard={this.moveCard}>
-          <CardSource
+        <BlockTarget level={1} key={child} position={{firstLevelIndex, secondLevelIndex}} moveCard={this.moveCard}>
+          <BlockSource
             key={child}
             position={{firstLevelIndex, secondLevelIndex: secondLevelIndex + 1}}
             index={secondLevelIndex}
             isChild={true}
           >
             {this.renderItem(child)}
-          </CardSource>
-        </CardTarget>
+          </BlockSource>
+        </BlockTarget>
         )
       )}
     </div>
