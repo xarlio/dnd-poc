@@ -6,6 +6,7 @@
     "react-scripts": "0.9.5"
   },
   "dependencies": {
+    "freezr": "^0.0.13",
     "react": "^15.5.3",
     "react-dnd": "^2.3.0",
     "react-dnd-html5-backend": "^2.3.0",

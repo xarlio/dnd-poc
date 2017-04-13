@@ -8,6 +8,10 @@ const cardTarget = {
     const originalPosition = monitor.getItem().position;
     const destinationPosition = props.position
 
+    if (monitor.didDrop()) {
+      return
+    }
+
   
     if (props.level === 0 && originalPosition.firstLevelIndex === destinationPosition.firstLevelIndex) {
       return
@@ -59,7 +63,7 @@ const cardTarget = {
     }
 
     // Time to actually perform the action
-    props.moveCard(originalPosition, destinationPosition);
+    props.moveBlock(originalPosition, destinationPosition);
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
