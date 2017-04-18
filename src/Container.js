@@ -65,12 +65,19 @@ const insertAtBottom = (blocks, groupIndex, origin) => {
     .deleteAt(origin)
 }
 
+const preserveAtLeastOneChild = (blocks) => {
+  if (blocks.length <= 1) {
+    return blocks.push('undefined' + Math.random())
+  }
+  return blocks
+}
+
 const moveChildToTop = (blocks, destination, originGroupIndex, originIndex) => {
   console.log('moveChildToTop')
   console.log(originGroupIndex, originIndex)
   const destinationBlock = blocks[originGroupIndex][originIndex]
   return blocks
-    .set(originGroupIndex, blocks[originGroupIndex].deleteAt(1))
+    .set(originGroupIndex, preserveAtLeastOneChild(blocks[originGroupIndex].deleteAt(1)))
     .insertAt(destination + 1, destinationBlock)
 }
 
@@ -79,7 +86,7 @@ const moveChildToBottom = (blocks, destination, originGroupIndex, originIndex) =
   console.log(originGroupIndex, originIndex)
   const destinationBlock = blocks[originGroupIndex][originIndex]
   return blocks
-    .set(originGroupIndex, blocks[originGroupIndex].deleteAt(blocks[originGroupIndex].length - 1))
+    .set(originGroupIndex, preserveAtLeastOneChild(blocks[originGroupIndex].deleteAt(blocks[originGroupIndex].length - 1)))
     .insertAt(destination, destinationBlock)
 }
 
