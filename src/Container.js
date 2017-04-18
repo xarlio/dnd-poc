@@ -10,36 +10,7 @@ import {deepFreeze} from 'freezr'
 const style = {
   width: 400,
 };
-// export const moveBlocks = (blocks, origin, destination) => {
-//   console.log(origin, destination)
-//   const dragItem = origin.secondLevelIndex ? blocks[origin.firstLevelIndex][origin.secondLevelIndex] : blocks[origin.firstLevelIndex];
-  
-//   if (origin.secondLevelIndex !== destination.secondLevelIndex && destination.secondLevelIndex === 0) {
-//     // from child to outside
-//     return blocks
-//       .set(origin.firstLevelIndex, blocks[origin.firstLevelIndex].deleteAt(origin.secondLevelIndex))
-//       .insertAt(destination.firstLevelIndex, dragItem)
-//   } else if (origin.secondLevelIndex !== destination.secondLevelIndex && origin.firstLevelIndex === destination.firstLevelIndex) {
-//     // reorder child
-//     return blocks
-//       .setIn([origin.firstLevelIndex, origin.secondLevelIndex], blocks[destination.firstLevelIndex][destination.secondLevelIndex])
-//       .setIn([destination.firstLevelIndex, destination.secondLevelIndex], dragItem)
-//   } else {
-//     // moving from top level
-//     if (destination.secondLevelIndex === 0) {
-//       // moving in top level
-//       return blocks
-//         .set(origin.firstLevelIndex, blocks[destination.firstLevelIndex])
-//         .set(destination.firstLevelIndex, dragItem)
-//     } else {
-//       // from top level to child
-//       return blocks
-//         .set(destination.firstLevelIndex, blocks[destination.firstLevelIndex].insertAt(destination.secondLevelIndex, dragItem))
-//         .deleteAt(origin.firstLevelIndex)
-//     }
-//   }
-//   return blocks
-// }
+
 const moveBlocks = (blocks, groupIndex, origin, destination) => {
   console.log('moveBlocks', groupIndex, origin, destination)
   const originBlock = groupIndex ? blocks[groupIndex][origin] : blocks[origin]
