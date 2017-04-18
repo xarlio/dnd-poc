@@ -70,7 +70,7 @@ class Container extends Component {
     this.moveChildToTop = this.moveChildToTop.bind(this)
     this.moveChildToBottom = this.moveChildToBottom.bind(this)
     this.state = {
-      blocks: deepFreeze(['a', 'b', ['A', 'B', 'C', 'D'], 'c', 'd']),
+      blocks: deepFreeze(['a', 'b', ['A', 'B', 'C', 'D'], 'c', ['AA', 'BB', 'CC', 'DD'], 'd']),
     }
   }
 
@@ -114,7 +114,7 @@ class Container extends Component {
 
   renderGroup (group, groupIndex) {
     return <GroupTarget key={group[0]} length={group.length} index={groupIndex} insertAtTop={this.insertAtTop} insertAtBottom={this.insertAtBottom}>
-      <BlockSource isChild={false} index={groupIndex}>
+      <BlockSource isGroup index={groupIndex}>
         {this.renderBlock(group[0], groupIndex)}
         {group.slice(1).map((block, index) => {
           return this.renderBlockTarget(block, index + 1, groupIndex)

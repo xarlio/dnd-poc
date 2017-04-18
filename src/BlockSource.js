@@ -14,9 +14,9 @@ const style = {
 const cardSource = {
   beginDrag(props) {
     return {
-      id: props.id,
       index: props.index,
       groupIndex: props.groupIndex,
+      isGroup: props.isGroup,
     };
   },
 };
