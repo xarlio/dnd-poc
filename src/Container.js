@@ -12,11 +12,11 @@ const style = {
 };
 
 const moveBlocks = (blocks, groupIndex, origin, destination) => {
-  console.log('moveBlocks', groupIndex, origin, destination)
-  const originBlock = groupIndex ? blocks[groupIndex][origin] : blocks[origin]
-  const destinationBlock = groupIndex ? blocks[groupIndex][destination] : blocks[destination]
-  const originPath = groupIndex ? [groupIndex, origin] : [origin]
-  const destinationPath = groupIndex ? [groupIndex, destination] : [destination]
+  console.log('moveBlocks', groupIndex>=0, origin, destination)
+  const originBlock = groupIndex>=0 ? blocks[groupIndex][origin] : blocks[origin]
+  const destinationBlock = groupIndex>=0 ? blocks[groupIndex][destination] : blocks[destination]
+  const originPath = groupIndex>=0 ? [groupIndex, origin] : [origin]
+  const destinationPath = groupIndex>=0 ? [groupIndex, destination] : [destination]
   return blocks
     .setIn(originPath, destinationBlock)
     .setIn(destinationPath, originBlock)
@@ -44,8 +44,7 @@ const preserveAtLeastOneChild = (blocks) => {
 }
 
 const moveChildToTop = (blocks, destination, originGroupIndex, originIndex) => {
-  console.log('moveChildToTop')
-  console.log(originGroupIndex, originIndex)
+  console.log('moveChildToTop', destination, originGroupIndex, originIndex)
   const destinationBlock = blocks[originGroupIndex][originIndex]
   return blocks
     .set(originGroupIndex, preserveAtLeastOneChild(blocks[originGroupIndex].deleteAt(1)))
@@ -53,8 +52,7 @@ const moveChildToTop = (blocks, destination, originGroupIndex, originIndex) => {
 }
 
 const moveChildToBottom = (blocks, destination, originGroupIndex, originIndex) => {
-  console.log('moveChildToBottom')
-  console.log(originGroupIndex, originIndex)
+  console.log('moveChildToBottom', destination, originGroupIndex, originIndex)
   const destinationBlock = blocks[originGroupIndex][originIndex]
   return blocks
     .set(originGroupIndex, preserveAtLeastOneChild(blocks[originGroupIndex].deleteAt(blocks[originGroupIndex].length - 1)))

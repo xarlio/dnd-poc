@@ -14,7 +14,7 @@ const cardTarget = {
       return
     }
 
-    if (groupIndex) { // is a child
+    if (groupIndex >= 0) { // is a child
       return
     }
     

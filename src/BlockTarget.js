@@ -9,7 +9,7 @@ const cardTarget = {
     const groupIndex = monitor.getItem().groupIndex;
     const hoverIndex = props.index
 
-    if (!props.inAGroup && groupIndex) { // moving a child outside
+    if (!props.inAGroup && groupIndex>=0) { // moving a child outside
       if (hoverIndex<groupIndex) {
         props.moveChildToTop(hoverIndex, groupIndex, index)
         monitor.getItem().index = hoverIndex + 1
@@ -17,7 +17,7 @@ const cardTarget = {
         props.moveChildToBottom(hoverIndex, groupIndex, index)
         monitor.getItem().index = hoverIndex
       }
-      monitor.getItem().groupIndex = null
+      monitor.getItem().groupIndex = undefined
       return
     }
     if (hoverIndex === index) {
