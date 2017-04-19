@@ -5,22 +5,57 @@ import ItemTypes from './ItemTypes';
 
 const cardTarget = {
   hover(props, monitor, component) {
-    const index = monitor.getItem().index;
-    const groupIndex = monitor.getItem().groupIndex;
-    const hoverIndex = props.index
+    const target = {
+      isGroup: props.isGroup,
+      index: props.index,
+      childsCount: props.childsCount
+    }
+    const source = {
+      isGroup: monitor.getItem().isGroup,
+      index: monitor.getItem().index,
+      groupIndex: monitor.getItem().groupIndex
+    }
 
-    if (!props.inAGroup && groupIndex>=0) { // moving a child outside
-      if (hoverIndex<groupIndex) {
-        props.moveChildToTop(hoverIndex, groupIndex, index)
-        monitor.getItem().index = hoverIndex + 1
+    if (target.isGroup) {
+      if (source.isGroup) { // cannot have nested groups
+        return
+      }
+
+      if (source.groupIndex >= 0) { // is a child
+        return
+      }
+      
+      if (target.index === source.index) {
+        return
+      }
+
+      // Dragging downwards
+      if (target.index < source.index) {
+        props.insertAtBottom(target.index, source.index)
+        monitor.getItem().index = target.childsCount
+        monitor.getItem().groupIndex = target.index
+      }
+
+      // Dragging upwards
+      if (target.index > source.index) {
+        props.insertAtTop(target.index, source.index)
+        monitor.getItem().index = 1
+        monitor.getItem().groupIndex = target.index - 1 // as we remove the previous block of the group, the group gets another index
+      }
+      return
+    }
+    if (!props.inAGroup && source.groupIndex>=0) { // moving a child outside
+      if (target.index < source.groupIndex) {
+        props.moveChildToTop(target.index, source.groupIndex, source.index)
+        monitor.getItem().index = target.index + 1
       } else {
-        props.moveChildToBottom(hoverIndex, groupIndex, index)
-        monitor.getItem().index = hoverIndex
+        props.moveChildToBottom(target.index, source.groupIndex, source.index)
+        monitor.getItem().index = target.index
       }
       monitor.getItem().groupIndex = undefined
       return
     }
-    if (hoverIndex === index) {
+    if (target.index === source.index) {
       return
     }
 
@@ -41,23 +76,23 @@ const cardTarget = {
     // When dragging upwards, only move when the cursor is above 50%
 
     // Dragging downwards
-    if (hoverIndex < index && hoverClientY > hoverMiddleY) {
+    if (target.index < source.index && hoverClientY > hoverMiddleY) {
       return;
     }
 
     // Dragging upwards
-    if (hoverIndex > index && hoverClientY < hoverMiddleY) {
+    if (target.index > source.index && hoverClientY < hoverMiddleY) {
       return;
     }
 
     // Time to actually perform the action
-    props.moveBlocks(groupIndex, index, hoverIndex)
+    props.moveBlocks(source.groupIndex, source.index, target.index)
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
-    monitor.getItem().index = hoverIndex
+    monitor.getItem().index = target.index
   },
 };
 

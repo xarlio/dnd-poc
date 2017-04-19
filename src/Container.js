@@ -4,7 +4,6 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import BlockSource from './BlockSource';
 import BlockTarget from './BlockTarget';
-import GroupTarget from './GroupTarget';
 import {deepFreeze} from 'freezr'
 
 const style = {
@@ -111,18 +110,18 @@ class Container extends Component {
   }
 
   renderGroup (group, groupIndex) {
-    return <GroupTarget key={group[0]} length={group.length} index={groupIndex} insertAtTop={this.insertAtTop} insertAtBottom={this.insertAtBottom}>
+    return <BlockTarget isGroup key={group[0]} index={groupIndex} childsCount={group.length} moveBlocks={this.moveBlocks} moveChildToTop={this.moveChildToTop} moveChildToBottom={this.moveChildToBottom} insertAtTop={this.insertAtTop} insertAtBottom={this.insertAtBottom}>
       <BlockSource isGroup index={groupIndex}>
         {this.renderBlock(group[0], groupIndex)}
         {group.slice(1).map((block, index) => {
           return this.renderBlockTarget(block, index + 1, groupIndex)
         })}
       </BlockSource>
-    </GroupTarget>
+    </BlockTarget>
   }
 
   renderBlockTarget (block, index, groupIndex) {
-    return <BlockTarget inAGroup={groupIndex>=0} key={block} index={index} moveBlocks={this.moveBlocks} moveChildToTop={this.moveChildToTop} moveChildToBottom={this.moveChildToBottom}>
+    return <BlockTarget inAGroup={groupIndex>=0} key={block} index={index} moveBlocks={this.moveBlocks} moveChildToTop={this.moveChildToTop} moveChildToBottom={this.moveChildToBottom} insertAtTop={this.insertAtTop} insertAtBottom={this.insertAtBottom}>
       <BlockSource isChild={groupIndex>=0} index={index} groupIndex={groupIndex}>
         {this.renderBlock(block, index, groupIndex)}
       </BlockSource>
