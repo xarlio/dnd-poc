@@ -11,7 +11,7 @@ const style = {
 };
 
 const moveBlocks = (blocks, groupIndex, origin, destination) => {
-  console.log('moveBlocks', groupIndex>=0, origin, destination)
+  console.log('moveBlocks', groupIndex, origin, destination)
   const originBlock = groupIndex>=0 ? blocks[groupIndex][origin] : blocks[origin]
   const destinationBlock = groupIndex>=0 ? blocks[groupIndex][destination] : blocks[destination]
   const originPath = groupIndex>=0 ? [groupIndex, origin] : [origin]
@@ -121,7 +121,7 @@ class Container extends Component {
   }
 
   renderBlockTarget (block, index, groupIndex) {
-    return <BlockTarget inAGroup={groupIndex>=0} key={block} index={index} moveBlocks={this.moveBlocks} moveChildToTop={this.moveChildToTop} moveChildToBottom={this.moveChildToBottom} insertAtTop={this.insertAtTop} insertAtBottom={this.insertAtBottom}>
+    return <BlockTarget groupIndex={groupIndex} key={block} index={index} moveBlocks={this.moveBlocks} moveChildToTop={this.moveChildToTop} moveChildToBottom={this.moveChildToBottom} insertAtTop={this.insertAtTop} insertAtBottom={this.insertAtBottom}>
       <BlockSource isChild={groupIndex>=0} index={index} groupIndex={groupIndex}>
         {this.renderBlock(block, index, groupIndex)}
       </BlockSource>
