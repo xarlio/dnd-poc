@@ -3,20 +3,8 @@ import { findDOMNode } from 'react-dom';
 import { DropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
 
-const cardTarget = {
-  hover(props, monitor, component) {
-    const target = {
-      isGroup: props.isGroup,
-      index: props.index,
-      childsCount: props.childsCount
-    }
-    const source = {
-      isGroup: monitor.getItem().isGroup,
-      index: monitor.getItem().index,
-      groupIndex: monitor.getItem().groupIndex
-    }
-
-    if (target.isGroup) {
+export const hover = (source, target, fn, hoverClientY, hoverMiddleY) => {
+  if (target.isGroup) {
       if (source.isGroup) { // cannot have nested groups
         return
       }
@@ -24,52 +12,38 @@ const cardTarget = {
       if (source.groupIndex >= 0) { // is a child
         return
       }
-      
-      if (target.index === source.index) {
-        return
-      }
 
       // Dragging downwards
       if (target.index < source.index) {
-        props.insertAtBottom(target.index, source.index)
-        monitor.getItem().index = target.childsCount
-        monitor.getItem().groupIndex = target.index
+        fn.insertAtBottom(target.index, source.index)
+        return {
+          index: target.childsCount,
+          groupIndex: target.index
+        }
       }
 
       // Dragging upwards
       if (target.index > source.index) {
-        props.insertAtTop(target.index, source.index)
-        monitor.getItem().index = 1
-        monitor.getItem().groupIndex = target.index - 1 // as we remove the previous block of the group, the group gets another index
+        fn.insertAtTop(target.index, source.index)
+        return {
+          index: 1,
+          groupIndex: target.index - 1 // as we remove the previous block of the group, the group gets another index
+        }
       }
-      return
     }
-    if (!props.inAGroup && source.groupIndex>=0) { // moving a child outside
+    if (!target.inAGroup && source.groupIndex>=0) { // moving a child outside
+      let newIndex = target.index
       if (target.index < source.groupIndex) {
-        props.moveChildToTop(target.index, source.groupIndex, source.index)
-        monitor.getItem().index = target.index + 1
+        fn.moveChildToTop(target.index, source.groupIndex, source.index)
+        newIndex = newIndex + 1
       } else {
-        props.moveChildToBottom(target.index, source.groupIndex, source.index)
-        monitor.getItem().index = target.index
+        fn.moveChildToBottom(target.index, source.groupIndex, source.index)
       }
-      monitor.getItem().groupIndex = undefined
-      return
+      return {
+        groupIndex: undefined,
+        index: newIndex
+      }
     }
-    if (target.index === source.index) {
-      return
-    }
-
-    // Determine rectangle on screen
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect()
-
-    // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-
-    // Determine mouse position
-    const clientOffset = monitor.getClientOffset()
-
-    // Get pixels to the top
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top
 
     // Only perform the move when the mouse has crossed half of the items height
     // When dragging downwards, only move when the cursor is below 50%
@@ -86,13 +60,52 @@ const cardTarget = {
     }
 
     // Time to actually perform the action
-    props.moveBlocks(source.groupIndex, source.index, target.index)
+    fn.moveBlocks(source.groupIndex, source.index, target.index)
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
-    monitor.getItem().index = target.index
+    return {
+      index: target.index
+    }
+
+}
+
+const cardTarget = {
+  hover(props, monitor, component) {
+    const target = {
+      isGroup: props.isGroup,
+      inAGroup: props.inAGroup,
+      index: props.index,
+      childsCount: props.childsCount
+    }
+    const source = {
+      isGroup: monitor.getItem().isGroup,
+      index: monitor.getItem().index,
+      groupIndex: monitor.getItem().groupIndex
+    }
+
+    if (target.index === source.index) {
+      return
+    }
+
+    // Determine rectangle on screen
+    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect()
+
+    // Get vertical middle
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+
+    // Determine mouse position
+    const clientOffset = monitor.getClientOffset()
+
+    // Get pixels to the top
+    const hoverClientY = clientOffset.y - hoverBoundingRect.top
+
+    const result = hover(source, target, props, hoverClientY, hoverMiddleY) || {}
+    Object.keys(result).forEach((key)=>{
+      monitor.getItem()[key] = result[key]
+    })
   },
 };
 
